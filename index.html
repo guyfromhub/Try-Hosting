@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentation</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-size: larger;
+    }
+
+
+    /* container for content */
+    #content {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 40px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      /* smooth fade */
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #toggleNav {
+      position: fixed;
+      left: 10px;
+      /* move a bit away from edge */
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.6;
+      /* more visible */
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      z-index: 9999;
+      /* stays on top of slides */
+    }
+
+
+    h1 {
+      font-size: 5rem;
+      text-align: center;
+      margin-top: 20%;
+    }
+
+    h2 {
+      font-size: 3rem;
+    }
+
+    p,
+    .tools,
+    .users {
+      font-size: 2rem;
+      margin-top: 20px;
+    }
+
+    .topic-slide {
+      text-align: left;
+    }
+
+    .users {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+    }
+
+    .user-card {
+      text-align: center;
+    }
+
+    .user-card img {
+      height: 200px;
+      width: auto;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      background: white;
+      padding: 4px;
+    }
+
+    .maincontent {
+      margin-left: 5%;
+      font-size: 40px;
+    }
+
+    #progressBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    #progress {
+      height: 100%;
+      width: 0;
+      background: #38bdf8;
+      /* cyan/blue bar */
+      transition: width 0.4s ease;
+    }
+
+    #slideCounter {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    .nav-btn {
+      position: fixed;
+      bottom: 20px;
+      padding: 10px 24px;
+      min-width: 80px;
+      /* ensures pill shape for short text */
+      text-align: center;
+      /* center text */
+      background: rgba(30, 70, 125, 0.8);
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 999px;
+      /* pill shape */
+      font-size: 16px;
+      backdrop-filter: blur(6px);
+    }
+
+
+    /* only positioning differs */
+    #prevBtn {
+      left: 40px;
+    }
+
+    #nextBtn {
+      right: 40px;
+    }
+
+    .mainsubcontent {
+      margin-top: 20px;
+      font-size: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- checkbox initially checked -->
+  <input type="checkbox" id="toggleNav" checked>
+  <div id="progressBar">
+    <div id="progress"></div>
+  </div>
+  <div id="slideCounter"></div>
+
+
+  <!-- content container -->
+  <div id="content">
+    <div id="slides"></div>
+  </div>
+
+  <button id="prevBtn" class="nav-btn">← Prev</button>
+  <button id="nextBtn" class="nav-btn">Next →</button>
+
+
+  <script>
+    const slidesData = [
+      { type: 'title', content: 'Antivirus Applications in Cloud Computing' },
+      {
+        type: 'definition',
+        content: 'Antivirus applications in cloud computing protect cloud systems, data, and services from malware and cyber threats through real-time scanning and monitoring.'
+      },
+
+      {
+        type: 'topic',
+        name: 'Email and Web Security',
+        content: [
+          'Protects email and web traffic from phishing, spam, and malicious links in cloud environments.'
+        ],
+        tools: [
+          'Proofpoint',
+          'Mimecast',
+          'Barracuda Email Security',
+          'Google Workspace Security'
+        ],
+        users: [
+          { name: 'NASA', logo: 'nasa.png' },
+          { name: 'Spotify', logo: 'spotify.png' }
+        ]
+      },
+
+      {
+        type: 'topic',
+        name: 'Cloud Storage Scanning',
+        content: [
+          'Scans and removes malware from files stored in cloud platforms to prevent infections and data breaches.'
+        ],
+        tools: [
+          'Trend Micro Cloud One',
+          'McAfee MVISION Cloud',
+          'Symantec CloudSOC'
+        ],
+        users: [
+          { name: 'Netflix', logo: 'netflix.jpg' },
+          { name: 'LinkedIn', logo: 'linkedin.jpg' }
+        ]
+      },
+
+      {
+        type: 'topic',
+        name: 'Security for Virtual Machines and Containers',
+        content: [
+          'Protects workloads running on cloud-based virtual machines and containerized environments.'
+        ],
+        tools: [
+          'Trend Micro Deep Security',
+          'Aqua Security',
+          'Prisma Cloud (Palo Alto)'
+        ],
+        users: [
+          { name: 'Airbnb', logo: 'Airbnb.svg' },
+          { name: 'BMW', logo: 'BMW.svg' }
+        ]
+      },
+
+      {
+        type: 'topic',
+        name: 'Threat Intelligence and Analytics',
+        content: [
+          'Collects and analyzes threat data to predict, detect, and respond to cyberattacks.'
+        ],
+        tools: [
+          'IBM QRadar',
+          'Splunk Enterprise Security',
+          'Recorded Future'
+        ],
+        users: [
+          { name: 'American Express', logo: 'American_Express_logo.svg' },
+          { name: 'Shell', logo: 'shell.png' }
+        ]
+      },
+
+      {
+        type: 'topic',
+        name: 'Managed Detection and Response (MDR)',
+        content: [
+          'Provides 24/7 outsourced monitoring, detection, and response against advanced cyber threats.'
+        ],
+        tools: [
+          'Arctic Wolf',
+          'Rapid7 MDR',
+          'CrowdStrike Falcon Complete'
+        ],
+        users: [
+          { name: 'Hyundai', logo: 'hyundai.png' },
+          { name: 'Nissan', logo: 'nissan.png' }
+        ]
+      },
+
+      { type: 'empty' }
+    ];
+
+
+    const slidesContainer = document.getElementById('slides');
+    slidesData.forEach((slide, index) => {
+      const slideDiv = document.createElement('div');
+      slideDiv.classList.add('slide');
+      if (index === 0) slideDiv.classList.add('active');
+      if (slide.type === 'topic') slideDiv.classList.add('topic-slide');
+
+      if (slide.type === 'title') {
+        slideDiv.innerHTML = `<h1>${slide.content}</h1>`;
+      } else if (slide.type === 'definition') {
+        slideDiv.innerHTML = `<h2 style="text-align:center;font-size:50px;margin-top:10%;">Definition</h2><div style="display:flex; justify-content:center;"><p style="text-align:center;width:70%;font-size:40px;">${slide.content}</p></div>`;
+      } else if (slide.type === 'topic') {
+        slideDiv.innerHTML = `
+          <h2 class="maincontent" style="text-decoration:underline;">${slide.name}</h2>
+          <div class="maincontent mainsubcontent">
+            <ul type="circle">${slide.content.map(t => `<li>${t}</li>`).join('')}</ul>
+          </div>
+          <div class="tools maincontent mainsubcontent"><strong>Tools:</strong>
+            <ul>${slide.tools.map(t => `<li>${t}</li>`).join('')}</ul>
+          </div>
+          <strong class="maincontent">Notable Users:</strong>
+          <div class="users maincontent">
+            ${slide.users.map(u => `
+              <div class="user-card">
+                <img src="${u.logo}" alt="${u.name} logo">
+                <div>${u.name}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (slide.type === 'empty') {
+        slideDiv.innerHTML = `<h2 style="text-align:center;margin-top: 16%;">End of Presentation</h2>
+        <div style="text-align:center;">
+          <ul type="square" style="display:flex; flex-direction:column; align-items:center; font-size:30px;gap:10px;">
+            <li>Priyanshu Das</li>
+            <li>Shreya Shah</li>
+          </ul>
+        </div>`;
+      }
+      slidesContainer.appendChild(slideDiv);
+    });
+
+    let currentSlide = 0;
+    const totalSlides = slidesData.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const toggleNav = document.getElementById('toggleNav');
+
+    function showSlide(index) {
+      const slides = document.querySelectorAll('.slide');
+      slides.forEach((s, i) => s.classList.remove('active'));
+      slides[index].classList.add('active');
+
+      // buttons
+      prevBtn.style.display = index === 0 ? 'none' : 'block';
+      nextBtn.style.display = index === totalSlides - 1 ? 'none' : 'block';
+
+      // progress bar
+      const progress = document.getElementById('progress');
+      progress.style.width = ((index + 1) / totalSlides) * 100 + "%";
+
+      // slide counter
+      const slideCounter = document.getElementById('slideCounter');
+      slideCounter.textContent = `${index + 1} / ${totalSlides}`;
+    }
+
+
+    prevBtn.addEventListener('click', () => {
+      if (currentSlide > 0) currentSlide--;
+      showSlide(currentSlide);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentSlide < totalSlides - 1) currentSlide++;
+      showSlide(currentSlide);
+    });
+
+    toggleNav.addEventListener('change', (e) => {
+      const visible = e.target.checked;
+      prevBtn.style.visibility = visible ? 'visible' : 'hidden';
+      nextBtn.style.visibility = visible ? 'visible' : 'hidden';
+    });
+
+    let startX = 0;
+    document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+    document.addEventListener('touchend', e => {
+      let endX = e.changedTouches[0].clientX;
+      if (startX - endX > 50) {
+        if (currentSlide < totalSlides - 1) currentSlide++;
+      } else if (endX - startX > 50) {
+        if (currentSlide > 0) currentSlide--;
+      }
+      showSlide(currentSlide);
+    });
+
+    showSlide(currentSlide);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cybersecurity Presentation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #030712 0%, #0f172a 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(96, 165, 250, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.05) 0%, transparent 70%);
+      animation: floatBackground 20s ease-in-out infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes floatBackground {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-20px, -20px) scale(1.05); }
+      66% { transform: translate(20px, -10px) scale(0.95); }
+    }
+    
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1100px;
+      padding: 60px;
+      opacity: 0;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .active {
+      display: block;
+    }
+    
+    /* Enhanced fade animations with multiple elements */
+    .fade-in {
+      animation: slideInFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    
+    .fade-out {
+      animation: slideOutFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    
+    @keyframes slideInFade {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        filter: blur(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+    
+    @keyframes slideOutFade {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+        filter: blur(10px);
+      }
+    }
+    
+    /* Staggered animations for child elements */
+    .fade-in h1,
+    .fade-in h2 {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: 0.1s;
+    }
+    
+    .fade-in p,
+    .fade-in .tools {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: 0.2s;
+      opacity: 0;
+    }
+    
+    .fade-in .users {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: 0.3s;
+      opacity: 0;
+    }
+    
+    .fade-in .user-card {
+      animation: fadeInScale 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+    }
+    
+    .fade-in .user-card:nth-child(1) { animation-delay: 0.4s; }
+    .fade-in .user-card:nth-child(2) { animation-delay: 0.5s; }
+    .fade-in .user-card:nth-child(3) { animation-delay: 0.6s; }
+    .fade-in .user-card:nth-child(4) { animation-delay: 0.7s; }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* Navigation buttons with enhanced styling */
+    .nav-btn {
+      position: fixed;
+      bottom: 40px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+    
+    .nav-btn:hover {
+      background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(96, 165, 250, 0.3);
+    }
+    
+    .nav-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    #prevBtn {
+      left: 40px;
+    }
+    
+    #nextBtn {
+      right: 40px;
+    }
+    
+    /* Toggle navigation checkbox (hidden but functional) */
+    #toggleNav {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      opacity: 0;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 11;
+    }
+    
+    /* Visible toggle button */
+    .toggle-label {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .toggle-label:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .toggle-label::before {
+      content: '👁️';
+      font-size: 16px;
+    }
+    
+    h1 {
+      font-size: 3.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      font-weight: 700;
+    }
+    
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #60a5fa;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, #60a5fa 0%, transparent 100%);
+      animation: expandWidth 1s ease-out forwards;
+    }
+    
+    @keyframes expandWidth {
+      from { width: 0; }
+      to { width: 100px; }
+    }
+    
+    p {
+      font-size: 1.5rem;
+      line-height: 1.8;
+      color: #e5e7eb;
+    }
+    
+    /* Topic slides layout */
+    .topic-slide {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 60vh;
+    }
+    
+    .tools {
+      margin-bottom: 2.5rem;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(147, 51, 234, 0.05) 100%);
+      padding: 2rem;
+      border-radius: 16px;
+      border-left: 4px solid #60a5fa;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tools strong {
+      color: #60a5fa;
+      font-size: 1.3em;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    
+    .tools ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .tools li {
+      margin-bottom: 0.8rem;
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .tools li:hover {
+      transform: translateX(5px);
+    }
+    
+    .tools li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #60a5fa;
+      font-weight: bold;
+    }
+    
+    /* Enhanced users grid */
+    .users {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 30px;
+      margin-top: auto;
+    }
+    
+    .user-card {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      padding: 2rem;
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .user-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, transparent 0%, rgba(96, 165, 250, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .user-card:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 12px 40px rgba(96, 165, 250, 0.3);
+      border-color: rgba(96, 165, 250, 0.3);
+    }
+    
+    .user-card:hover::before {
+      opacity: 1;
+    }
+    
+    .user-card img {
+      height: 70px;
+      width: 70px;
+      object-fit: contain;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      background: white;
+      padding: 10px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.4s ease;
+    }
+    
+    .user-card:hover img {
+      transform: scale(1.1) rotate(5deg);
+    }
+    
+    .user-card div {
+      font-weight: 600;
+      color: #f3f4f6;
+      font-size: 1.1rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Center-aligned slides */
+    .center-slide {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 70vh;
+    }
+    
+    .center-slide p {
+      max-width: 800px;
+      font-size: 1.8rem;
+      color: #d1d5db;
+      line-height: 1.6;
+    }
+    
+    /* Enhanced slide counter */
+    .slide-counter {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      color: #cbd5e1;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    .slide-counter:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    }
+    
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 10;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #60a5fa 0%, #a78bfa 100%);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+    }
+    
+    /* Keyboard hint */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #6b7280;
+      font-size: 12px;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+    
+    .keyboard-hint:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  
+  <input type="checkbox" id="toggleNav" checked>
+  <label for="toggleNav" class="toggle-label" title="Toggle navigation"></label>
+
+  <div id="slides"></div>
+
+  <button id="prevBtn" class="nav-btn">← Previous</button>
+  <button id="nextBtn" class="nav-btn">Next →</button>
+  
+  <div class="slide-counter">
+    <span id="currentSlideNum">1</span> / <span id="totalSlideNum">5</span>
+  </div>
+  
+  <div class="keyboard-hint">Use arrow keys to navigate</div>
+
+  <script>
+    const slidesData = [
+      { 
+        type: 'title', 
+        content: 'Cybersecurity Overview',
+        subtitle: 'Protecting Our Digital World'
+      },
+      { 
+        type: 'definition', 
+        content: 'Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. These cyberattacks are usually aimed at accessing, changing, or destroying sensitive information, extorting money from users, or interrupting normal business processes.' 
+      },
+      { 
+        type: 'topic', 
+        name: 'Email and Web Security', 
+        tools: ['Proofpoint - Advanced Threat Protection', 'Mimecast - Cloud Email Security', 'Barracuda - Email Security Gateway'], 
+        users: [
+          { name: 'NASA', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg' },
+          { name: 'Spotify', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg' },
+          { name: 'Netflix', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/69/Netflix_logo.svg' }
+        ]
+      },
+      { 
+        type: 'topic', 
+        name: 'Cloud Storage Scanning', 
+        tools: ['Symantec CloudSOC', 'McAfee MVISION Cloud', 'Microsoft Cloud App Security'], 
+        users: [
+          { name: 'Dropbox', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg' },
+          { name: 'Google Drive', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png' },
+          { name: 'OneDrive', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Microsoft_Office_OneDrive_%282019%29.svg' }
+        ]
+      },
+      { 
+        type: 'conclusion',
+        title: 'Thank You!',
+        content: 'Stay Secure, Stay Protected'
+      }
+    ];
+
+    const slidesContainer = document.getElementById('slides');
+    const progressFill = document.getElementById('progressFill');
+    
+    slidesData.forEach((slide, index) => {
+      const slideDiv = document.createElement('div');
+      slideDiv.classList.add('slide');
+      if (index === 0) slideDiv.classList.add('active', 'fade-in');
+      
+      if (slide.type === 'topic') {
+        slideDiv.classList.add('topic-slide');
+      } else {
+        slideDiv.classList.add('center-slide');
+      }
+
+      if (slide.type === 'title') {
+        slideDiv.innerHTML = `
+          <h1>${slide.content}</h1>
+          <p style="font-size: 1.8rem; color: #94a3b8; margin-top: 1rem;">${slide.subtitle}</p>
+        `;
+      } else if (slide.type === 'definition') {
+        slideDiv.innerHTML = `
+          <h2>What is Cybersecurity?</h2>
+          <p>${slide.content}</p>
+        `;
+      } else if (slide.type === 'topic') {
+        slideDiv.innerHTML = `
+          <h2>${slide.name}</h2>
+          <div class="tools">
+            <strong>🛡️ Security Solutions</strong>
+            <ul>${slide.tools.map(t => `<li>${t}</li>`).join('')}</ul>
+          </div>
+          <div class="users">
+            ${slide.users.map(u => `
+              <div class="user-card">
+                <img src="${u.logo}" alt="${u.name} logo">
+                <div>${u.name}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (slide.type === 'conclusion') {
+        slideDiv.innerHTML = `
+          <h1 style="font-size: 4rem;">${slide.title}</h1>
+          <p style="margin-top: 2rem;">${slide.content}</p>
+        `;
+      }
+      slidesContainer.appendChild(slideDiv);
+    });
+
+    let currentSlide = 0;
+    const totalSlides = slidesData.length;
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const toggleNav = document.getElementById('toggleNav');
+    const slideCounter = document.getElementById('currentSlideNum');
+    const totalCounter = document.getElementById('totalSlideNum');
+    
+    totalCounter.textContent = totalSlides;
+    let isAnimating = false;
+
+    function updateProgress() {
+      const progress = ((currentSlide + 1) / totalSlides) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+
+    function showSlide(index, direction = 'next') {
+      if (isAnimating) return;
+      isAnimating = true;
+      
+      const slides = document.querySelectorAll('.slide');
+      const currentSlideEl = slides[currentSlide];
+      const nextSlideEl = slides[index];
+      
+      // Remove previous animation classes
+      currentSlideEl.classList.remove('fade-in');
+      currentSlideEl.classList.add('fade-out');
+      
+      setTimeout(() => {
+        currentSlideEl.classList.remove('active', 'fade-out');
+        nextSlideEl.classList.add('active', 'fade-in');
+        
+        currentSlide = index;
+        slideCounter.textContent = currentSlide + 1;
+        updateProgress();
+        
+        prevBtn.style.display = currentSlide === 0 ? 'none' : 'block';
+        nextBtn.style.display = currentSlide === totalSlides - 1 ? 'none' : 'block';
+        
+        setTimeout(() => {
+          isAnimating = false;
+        }, 800);
+      }, 400);
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentSlide > 0 && !isAnimating) {
+        showSlide(currentSlide - 1, 'prev');
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentSlide < totalSlides - 1 && !isAnimating) {
+        showSlide(currentSlide + 1, 'next');
+      }
+    });
+
+    toggleNav.addEventListener('change', (e) => {
+      const visible = e.target.checked;
+      prevBtn.style.opacity = visible ? '1' : '0';
+      nextBtn.style.opacity = visible ? '1' : '0';
+      prevBtn.style.pointerEvents = visible ? 'auto' : 'none';
+      nextBtn.style.pointerEvents = visible ? 'auto' : 'none';
+      document.querySelector('.slide-counter').style.opacity = visible ? '1' : '0';
+      document.querySelector('.keyboard-hint').style.opacity = visible ? '0.6' : '0';
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (isAnimating) return;
+      if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+        showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+        showSlide(currentSlide - 1);
+      } else if (e.key === 'Home') {
+        showSlide(0);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides - 1);
+      }
+    });
+
+    // Touch navigation with improved gesture detection
+    let startX = 0;
+    let startY = 0;
+    
+    document.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    });
+    
+    document.addEventListener('touchend', e => {
+      if (isAnimating) return;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = startX - endX;
+      const diffY = startY - endY;
+      const threshold = 50;
+      
+      // Only trigger if horizontal swipe is greater than vertical
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
+        if (diffX > 0 && currentSlide < totalSlides - 1) {
+          showSlide(currentSlide + 1);
+        } else if (diffX < 0 && currentSlide > 0) {
+          showSlide(currentSlide - 1);
+        }
+      }
+    });
+
+    // Initialize
+    prevBtn.style.display = 'none';
+    updateProgress();
+    
+    // Hide keyboard hint after 5 seconds
+    setTimeout(() => {
+      document.querySelector('.keyboard-hint').style.opacity = '0';
+    }, 5000);
+  </script>
+</body>
+</html>
